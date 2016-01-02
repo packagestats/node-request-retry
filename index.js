@@ -11,6 +11,7 @@ var when = require('when');
 var request = require('request');
 var _ = require('fg-lodash');
 var RetryStrategies = require('./strategies');
+var debug = require('debug')('requestretry');
 
 
 var DEFAULTS = {
@@ -98,6 +99,7 @@ Request.prototype._tryUntilFail = function () {
       response.attempts = this.attempts;
     }
     if (this.retryStrategy(err, response) && this.maxAttempts > 0) {
+      debug('retrying request - retries: ' + this.attempts);
       this._timeout = setTimeout(this._tryUntilFail.bind(this), this.retryDelay);
       return;
     }
